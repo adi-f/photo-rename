@@ -8,4 +8,6 @@ import lombok.Value;
 public class Arguments {
     String csvFilePath;
     boolean dryRun;
+    boolean listFilesOnly;
+    boolean help;
 }

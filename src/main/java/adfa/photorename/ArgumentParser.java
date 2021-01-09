@@ -7,8 +7,26 @@ import java.util.Map;
 
 public class ArgumentParser {
 
+    public String getDescription() {
+        return "Arguments:\n" +
+                "-help (or no args): print this help\n" +
+                "-list:              list all files of this dir\n" +
+                "-csv <path> -dry:   print output, but do nothing\n" +
+                "-csv <path> -run:   print output and RENAME the files";
+    }
+
     public Arguments parse(String[] args) {
         Map<String, String> arguments = parseArgs(args);
+
+        boolean help = arguments.isEmpty() || arguments.containsKey("-help");
+        if(help) {
+            return Arguments.builder().help(true).dryRun(true).build();
+        }
+
+        boolean listFilesOnly = arguments.size() == 1 && arguments.containsKey("-list");
+        if(listFilesOnly) {
+            return Arguments.builder().listFilesOnly(true).dryRun(true).build();
+        }
 
         String csvFilePath = arguments.get("-csv");
         boolean dryRun = arguments.containsKey("-dry") || !arguments.containsKey("-run");
@@ -33,7 +51,7 @@ public class ArgumentParser {
             } else {
                 paramValue = null;
             }
-            argumets.put(paramValue, paramName);
+            argumets.put(paramName, paramValue);
         }
         return argumets;
     }

@@ -21,6 +21,17 @@ public class Main {
 
     private void run(String[] args) {
         Arguments arguments = argumentParser.parse(args);
+
+        if(arguments.isHelp()) {
+            fileIO.print(argumentParser.getDescription());
+            return;
+        }
+
+        if(arguments.isListFilesOnly()) {
+            fileIO.printListOfFiles();
+            return;
+        }
+
         List<Photo> photos;
         try (InputStream is = fileIO.readFile(arguments.getCsvFilePath())) {
             photos = csvParser.parse(is);
@@ -36,9 +47,9 @@ public class Main {
 
         if (arguments.isDryRun()) {
             fileIO.rename(outcome.getRenamings());
-            fileIO.printDone();
+            fileIO.print("All DONE!");
         } else {
-            fileIO.printDryRun();
+            fileIO.print("Skipping renaming, done.");
         }
     }
 }

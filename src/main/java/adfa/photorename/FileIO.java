@@ -17,6 +17,11 @@ public class FileIO {
         }
     }
 
+    public void printListOfFiles() {
+        System.out.println("\nFILES OF THIS DIR:");
+        listFilesOfCwd().forEach(System.out::println);
+    }
+
     public List<String> listFilesOfCwd() {
         return Stream.of(new File(".").listFiles())
                 .filter(File::isFile)
@@ -31,18 +36,14 @@ public class FileIO {
     }
 
     public void printOtherIgnoredFiles(List<String> otherIgnoredFiles) {
-        System.out.println("\nOTEHR IGNORED FILES:");
+        System.out.println("\nOTHER IGNORED FILES:");
         otherIgnoredFiles.forEach(System.out::println);
         System.out.println("Total ignored files: " + otherIgnoredFiles.size());
 
     }
 
-    public void printDone() {
-        System.out.println("All DONE!");
-    }
-
-    public void printDryRun() {
-        System.out.println("Skipping renaming, done.");
+    public void print(String message) {
+        System.out.println(message);
     }
 
     public void rename(List<Renaming> renamings) {
