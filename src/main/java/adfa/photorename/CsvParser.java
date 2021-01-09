@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CsvParser {
 
@@ -23,6 +22,7 @@ public class CsvParser {
     private List<String> readLines(InputStream is) {
         List<String> lines = new ArrayList<>();
         Scanner scanner = new Scanner(is);
+        scanner.nextLine(); // skip header
         while (scanner.hasNextLine()) {
             lines.add(scanner.nextLine());
         }
@@ -37,24 +37,36 @@ public class CsvParser {
         return lines.stream()
                 .map(line -> SEPARATOR.splitAsStream(line).map(String::trim).collect(Collectors.toUnmodifiableList()))
                 .peek(line -> {
-                    if (line.size() < 4) throw new RuntimeException("incomplete row: " + line);
+                    if (line.size() < 2) throw new RuntimeException("incomplete row: " + line);
                 })
                 .collect(Collectors.toUnmodifiableList());
     }
 
     private List<Photo> toPhotos(List<List<String>> table) {
         List<Photo> photos = new ArrayList<>(table.size());
-        for (int i = 0; i < table.size() - 1; i++) {
+        for (int i = 0; i < table.size(); i++) {
             List<String> row = table.get(i);
             photos.add(Photo.builder()
                     .counter(i + 1)
                     .day(Integer.parseInt(row.get(1)))
-                    .place(row.get(2))
-                    .description(row.get(3))
-                    .identifier(row.get(4))
+                    .place(getOrEmpty(row, 2))
+                    .description(getOrEmpty(row, 3))
+                    .identifier(getIdentifier(row.get(0)))
                     .build()
                     .validate());
         }
         return photos;
+    }
+
+    private String getOrEmpty(List<String> row, int index) {
+        if(index < row.size()) {
+            return row.get(index);
+        } else {
+            return "";
+        }
+    }
+
+    private String getIdentifier(String filename) {
+        return Photo.getIdentifierFromFilename(filename).orElseThrow(() -> new RuntimeException("Invalid filename in CSV: " + filename));
     }
 }

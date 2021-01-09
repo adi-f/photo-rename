@@ -4,8 +4,9 @@ import adfa.photorename.model.Arguments;
 import adfa.photorename.model.Outcome;
 import adfa.photorename.model.Photo;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
-
 
 public class Main {
 
@@ -20,7 +21,13 @@ public class Main {
 
     private void run(String[] args) {
         Arguments arguments = argumentParser.parse(args);
-        List<Photo> photos = csvParser.parse(fileIO.readFile(arguments.getCsvFilePath()));
+        List<Photo> photos;
+        try (InputStream is = fileIO.readFile(arguments.getCsvFilePath())) {
+            photos = csvParser.parse(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         List<String> photoFiles = fileIO.listFilesOfCwd();
         Outcome outcome = processor.process(photos, photoFiles);
 

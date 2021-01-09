@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 @Builder
 public class Photo {
     private static final Pattern IDENTIFIER_FROM_FILENAME_PATTERN =
-            Pattern.compile("-(.+)\\.\\w+$");
+            Pattern.compile("(?i)-?([^-]+)\\.(:?jpg|jpeg)$");
 
     int counter;
     int day;
@@ -22,7 +22,7 @@ public class Photo {
     public static Optional<String> getIdentifierFromFilename(String filename) {
         Matcher matcher = IDENTIFIER_FROM_FILENAME_PATTERN.matcher(filename);
         if (matcher.find()) {
-            return Optional.ofNullable(matcher.group());
+            return Optional.ofNullable(matcher.group(1));
         } else {
             return Optional.empty();
         }
@@ -31,9 +31,9 @@ public class Photo {
     public Photo validate() {
         if (counter < 1 ||
                 day < 0 ||
-                place.contains("-") ||
-                description.contains("-") ||
-                identifier.contains("-")
+                place.contains("-") || place.contains(" ") ||
+                description.contains("-") || description.contains(" ") ||
+                identifier.isEmpty() || identifier.contains("-") || identifier.contains(" ")
         ) {
             throw new RuntimeException("Illegal Photo: " + this);
         }
@@ -41,12 +41,15 @@ public class Photo {
     }
 
     public String toFileName() {
-        return String.format(
-                "%04d-%02d-%s-%s-%s.jpg",
-                counter,
-                day,
-                place,
-                description,
-                identifier);
+        StringBuilder filename = new StringBuilder(String.format("%04d-%02d", counter, day));
+        if(!place.isEmpty()) {
+            filename.append('-').append(place);
+        }
+        if(!description.isEmpty()) {
+            filename.append('-').append(description);
+
+        }
+        filename.append('-').append(identifier).append(".jpg");
+        return filename.toString();
     }
 }
