@@ -15,7 +15,7 @@ This is a simple program to rename my holiday pictures to a pattern that:
 
 * 0001-01-Hwy5-Sunset-DSC0008.jpg
 * 0002-01-Hwy5-NiceRedBridge-20200101_123.jpg
-* 0003-02-ViewFromHotelRoom-20200101_123.jpg
+* 0003-02-ViewFromHotelRoom-DSC0100.jpg
 
 ## Notes
 * You can0t use the dash (`-`) in the original file name, palace and description,
