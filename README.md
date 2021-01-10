@@ -22,4 +22,14 @@ This is a simple program to rename my holiday pictures to a pattern that:
   because it's the separator in new file name.
 * After you renamed everything, you can change the table and rerun the programm.
   The original file name is conserved as _identifier_, so the renaming algorithm
-  is idempotent and repeatable. 
+  is idempotent and repeatable.
+  
+## Programm Arguments
+(from `-help`)
+```
+Arguments:
+-help (or no args): print this help
+-list:              list all files of this dir
+-csv <path> -dry:   print output, but do nothing
+-csv <path> -run:   print output and RENAME the files
+```
