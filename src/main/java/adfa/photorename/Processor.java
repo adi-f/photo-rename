@@ -5,6 +5,7 @@ import adfa.photorename.model.Photo;
 import adfa.photorename.model.Renaming;
 
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,6 +21,7 @@ public class Processor {
         List<Renaming> renamings = identifierToPhoto
                 .entrySet()
                 .stream()
+                .sorted(Comparator.comparing(entry -> entry.getValue().getCounter()))
                 .map(entry -> Renaming.builder()
                         .oldName(identifierToCurrentFileName.computeIfAbsent(entry.getKey(), this::throwFileNotFound))
                         .newName(entry.getValue().toFileName())
@@ -32,6 +34,7 @@ public class Processor {
                 .stream()
                 .filter(entry -> !identifierToPhoto.containsKey(entry.getKey()))
                 .map(Entry::getValue)
+                .sorted()
                 .collect(Collectors.toUnmodifiableList());
 
         return Outcome.builder()
@@ -58,7 +61,7 @@ public class Processor {
                         filename
                 ))
                 .filter(entry -> entry.getKey().isPresent())
-                .collect(Collectors.toUnmodifiableMap(
+                .collect(Collectors.toMap(
                         entry -> entry.getKey().get(),
                         Entry::getValue
                 ));

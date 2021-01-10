@@ -14,6 +14,7 @@ class PhotoTest {
     void testGetIdentifierFromFilename() {
         assertEquals(Optional.of("DSC123"), Photo.getIdentifierFromFilename("DSC123.jpg"));
         assertEquals(Optional.of("DSC123"), Photo.getIdentifierFromFilename("DSC123.JPEG"));
+        assertEquals(Optional.of("DSC123"), Photo.getIdentifierFromFilename("DSC123.jPg"));
         assertEquals(Optional.of("id"), Photo.getIdentifierFromFilename("123-any-thing-before-the-id.JPEG"));
         assertEquals(Optional.empty(), Photo.getIdentifierFromFilename("hello"));
         assertEquals(Optional.empty(), Photo.getIdentifierFromFilename(""));
