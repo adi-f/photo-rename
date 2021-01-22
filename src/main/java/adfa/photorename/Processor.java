@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ public class Processor {
                         .newName(entry.getValue().toFileName())
                         .build()
                 )
+                .peek(this::checkIdempotency)
                 .collect(Collectors.toUnmodifiableList());
 
         List<String> otherIgnoredFiles = identifierToCurrentFileName
@@ -65,5 +67,13 @@ public class Processor {
                         entry -> entry.getKey().get(),
                         Entry::getValue
                 ));
+    }
+
+    private void checkIdempotency(Renaming renaming) {
+        Optional<String> identfierOld = Photo.getIdentifierFromFilename(renaming.getOldName());
+        Optional<String> identfierNew = Photo.getIdentifierFromFilename(renaming.getNewName());
+        if(!identfierOld.equals(identfierNew)) {
+            throw new RuntimeException(String.format("Renaming woud change identifier: old='%s', new='%s'", identfierOld.orElse(""), identfierNew.orElse("")));
+        }
     }
 }

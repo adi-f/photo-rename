@@ -46,10 +46,10 @@ public class Main {
         fileIO.printOtherIgnoredFiles(outcome.getOtherIgnoredFiles());
 
         if (arguments.isDryRun()) {
+            fileIO.print("Skipping renaming, done.");
+        } else {
             fileIO.rename(outcome.getRenamings());
             fileIO.print("All DONE!");
-        } else {
-            fileIO.print("Skipping renaming, done.");
         }
     }
 }
