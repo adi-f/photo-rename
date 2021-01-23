@@ -4,6 +4,7 @@ import adfa.photorename.model.Arguments;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ArgumentParser {
 
@@ -11,6 +12,8 @@ public class ArgumentParser {
         return "Arguments:\n" +
                 "-help (or no args): print this help\n" +
                 "-list:              list all files of this dir\n" +
+                "-sort <by>:         sort by:\n" +
+                "                    \"date-taken\": sort ascending by date take (EXIF)\n" +
                 "-csv <path> -dry:   print output, but do nothing\n" +
                 "-csv <path> -run:   print output and RENAME the files";
     }
@@ -23,9 +26,10 @@ public class ArgumentParser {
             return Arguments.builder().help(true).dryRun(true).build();
         }
 
-        boolean listFilesOnly = arguments.size() == 1 && arguments.containsKey("-list");
+        boolean listFilesOnly = Set.of("-list").equals(arguments.keySet())
+                || Set.of("-list", "-sort").equals(arguments.keySet());
         if(listFilesOnly) {
-            return Arguments.builder().listFilesOnly(true).dryRun(true).build();
+            return Arguments.builder().listFilesOnly(true).dryRun(true).sortFilesBy(arguments.get("-sort")).build();
         }
 
         String csvFilePath = arguments.get("-csv");

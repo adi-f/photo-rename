@@ -1,9 +1,12 @@
 package adfa.photorename;
 
+import adfa.photorename.model.Arguments;
 import adfa.photorename.model.Renaming;
 
 import java.io.*;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,15 +20,35 @@ public class FileIO {
         }
     }
 
-    public void printListOfFiles() {
+    public void printListOfFiles(Arguments arguments) {
         System.out.println("\nFILES OF THIS DIR:");
-        listFilesOfCwd().forEach(System.out::println);
+        listFilesOfCwd(arguments).forEach(System.out::println);
     }
 
     public List<String> listFilesOfCwd() {
-        return Stream.of(new File(".").listFiles())
-                .filter(File::isFile)
-                .map(File::getName)
+        return listFilesOfCwd((Comparator<File>) null);
+    }
+
+    private List<String> listFilesOfCwd(Arguments arguments) {
+        if (arguments.getSortFilesBy() == null) {
+            return listFilesOfCwd((Comparator<File>) null);
+        } else {
+            switch (arguments.getSortFilesBy()) {
+                case "date-taken":
+                    return listFilesOfCwd(new ExifDateTakenComparator());
+                default:
+                    throw new RuntimeException("Unknown sort by: " + arguments.getSortFilesBy());
+            }
+        }
+    }
+
+    private List<String> listFilesOfCwd(Comparator<File> comparator) {
+        Stream<File> files = Stream.of(Objects.requireNonNull(new File(".").listFiles()))
+                .filter(File::isFile);
+        if (comparator != null) {
+            files = files.sorted(comparator);
+        }
+        return files.map(File::getName)
                 .collect(Collectors.toUnmodifiableList());
     }
 

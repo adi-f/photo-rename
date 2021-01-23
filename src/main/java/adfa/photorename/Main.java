@@ -28,7 +28,7 @@ public class Main {
         }
 
         if(arguments.isListFilesOnly()) {
-            fileIO.printListOfFiles();
+            fileIO.printListOfFiles(arguments);
             return;
         }
 

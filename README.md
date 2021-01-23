@@ -30,6 +30,8 @@ This is a simple program to rename my holiday pictures to a pattern that:
 Arguments:
 -help (or no args): print this help
 -list:              list all files of this dir
+-sort <by>:         sort by:
+                    "date-taken": sort ascending by date take (EXIF)
 -csv <path> -dry:   print output, but do nothing
 -csv <path> -run:   print output and RENAME the files
 ```

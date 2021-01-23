@@ -10,4 +10,5 @@ public class Arguments {
     boolean dryRun;
     boolean listFilesOnly;
     boolean help;
+    String sortFilesBy;
 }

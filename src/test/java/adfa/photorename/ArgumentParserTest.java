@@ -27,6 +27,12 @@ class ArgumentParserTest {
                         ofArgs("-list"),
                         Arguments.builder().dryRun(true).listFilesOnly(true).help(false).build()
                 ),
+
+                arguments(
+                        ofArgs("-list -sort date-taken"),
+                        Arguments.builder().dryRun(true).listFilesOnly(true).sortFilesBy("date-taken").help(false).build()
+                ),
+
                 arguments(
                         ofArgs("-csv ./list.csv"),
                         Arguments.builder().csvFilePath("./list.csv").dryRun(true).listFilesOnly(false).help(false).build()
